@@ -72,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
         children: <Widget>[
           SizedBox(height: 10.0),
           Padding(
-            padding: EdgeInsets.all(7.0),
+            padding: EdgeInsets.only(left: 20.0, right: 10.0),
             child: Text("Hello there,",
               style: TextStyle(
                 fontSize: 20.0,
