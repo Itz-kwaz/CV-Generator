@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cvgenerator/screen/details_screen.dart';
+import 'package:cvgenerator/screen/jobs_edu_screen.dart';
+import 'package:cvgenerator/screen/links_screen.dart';
+import 'package:cvgenerator/screen/skills_screen.dart';
 
 
 class CreateCv extends StatefulWidget{
@@ -11,20 +13,42 @@ class CreateCv extends StatefulWidget{
 
 class _CreateCvState extends State<CreateCv> {
 
+  final int count= 0;
+  final double height = 0;
+  final String imageUri = "assets/file.png";
+  List<Map> list;
+
+  String value;
   static const  popItem = <String>['Delete'];
   static List<PopupMenuItem<String>> _pop  = popItem.map((String val) =>
       PopupMenuItem<String>(
         value: val,
         child: Text(val),
       )).toList();
-  String value;
-  //Number os  work experiences added by User.
-  int jobCount;
+
+  //Variable for company List;
+  List<Map> jobData = new List();
+  int _jobCount = 0;
+  double _jobListHeight = 0;
+  String _jobImageUri = "assets/portfolio.png";
 
   //Number of educational achievements added by User.
-  int eduCount;
+  List<Map> eduData = new List();
+  int _eduCount = 0;
+  double _eduListHeight = 0.0;
+  String _eduImageUri = 'assets/extension.png';
 
-  int linkCount;
+  //Number of Social Links,Website or Portfolio LInks added by User
+  List<Map> linkData = new List();
+  int _linkCount = 0;
+  double _linkListHeight = 0.0;
+  String _linkImageUri = "assets/extension.png";
+
+  //Number of Skills added by User
+  List<Map> skillData = new List();
+  int _skillsCount = 0;
+  double _skillsListHeight = 0.0;
+  String _skillsImageUri = "assets/extension.png";
 
   TextEditingController _firstNameController;
   TextEditingController _lastNameController;
@@ -36,6 +60,7 @@ class _CreateCvState extends State<CreateCv> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
       ),
@@ -129,7 +154,7 @@ class _CreateCvState extends State<CreateCv> {
           Padding(
             padding: EdgeInsets.only(left:12.0,right: 12.0,bottom: 5.0),
             child: TextField(
-              controller: _phoneNoController,
+              controller: _aboutController,
               maxLines: null,
               decoration: InputDecoration(
                  hintText: "I am very passionate developer with skills in java,flutter",
@@ -143,8 +168,8 @@ class _CreateCvState extends State<CreateCv> {
             color: Colors.grey,
             height: 20,
             thickness: 1,
-            indent: 5,
-            endIndent: 5,
+            indent: 15,
+            endIndent: 15,
           ),
           Padding(
             padding: EdgeInsets.only(left:15.0,bottom: 10.0),
@@ -164,81 +189,86 @@ class _CreateCvState extends State<CreateCv> {
                 ),)
           ),
           Container(
-              height: 100.0,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child:GestureDetector(
-                                child:Card(
-                                    elevation: 5.0,
-                                    child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
-                                      child:Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Container(
-                                            child:Image(
-                                                image:AssetImage('assets/portfolio.png')),
-                                            width: 40.0,
-                                            height: 40.0,
-                                          ),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('My Cv',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w500
-                                                  )),
-                                              SizedBox(height: 5.0),
-                                              Text('25 Jun 2020',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w300
-                                                  )),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          PopupMenuButton(
-                                              onSelected: (String val) async {
-                                                value = val;
-                                              },
-                                              itemBuilder:(BuildContext context) =>_pop)
-                                        ],
-                                      ), )
+            height: _jobListHeight,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _jobCount,
+                itemBuilder:(context,index){
+                  return  Container(
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child:GestureDetector(
+                              child:Card(
+                                  elevation: 5.0,
+                                  child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Container(
+                                          child:Image(
+                                              image:AssetImage(_skillsImageUri)),
+                                          width: 40.0,
+                                          height: 40.0,
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(jobData[index]["firstLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500
+                                                )),
+                                            SizedBox(height: 5.0),
+                                            Text(jobData[index]["secondLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w300
+                                                )),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        PopupMenuButton(
+                                            onSelected: (String val) async {
+                                              value = val;
+                                            },
+                                            itemBuilder:(BuildContext context) =>_pop)
+                                      ],
+                                    ), )
 
-                                )
-                            )
-                        )
-                    );
-                  })),
-          GestureDetector(
-            onTap: navigateTo,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(width: 30.0,),
-                Icon(Icons.add,
-                  color: Colors.blue[700],
-                ),
-                SizedBox(width:3.0),
-                Text("Add Employment",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue[700]
-                  ),),
-              ],
-            ),
+                              )
+                          )
+                      )
+                  );
+                }
+            ),),
+          InkWell(
+              splashColor: Colors.purple[100],
+              child:Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(width: 30.0,),
+                    Icon(Icons.add,
+                      color: Colors.blue[700],
+                    ),
+                    SizedBox(width:3.0),
+                    Text("Add Employment",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.blue[700]
+                      ),),
+                  ],
+                ),),
+              onTap:(){
+                navigateToDetailsScreen("Company","Job title","work");
+              }
           ),
           SizedBox(height:25.0),
           Padding(
@@ -259,81 +289,86 @@ class _CreateCvState extends State<CreateCv> {
                 ),)
           ),
           Container(
-              height: 0,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child:GestureDetector(
-                                child:Card(
-                                    elevation: 5.0,
-                                    child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
-                                      child:Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Container(
-                                            child:Image(
-                                                image:AssetImage('assets/portfolio.png')),
-                                            width: 40.0,
-                                            height: 40.0,
-                                          ),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('My Cv',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w500
-                                                  )),
-                                              SizedBox(height: 5.0),
-                                              Text('25 Jun 2020',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w300
-                                                  )),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          PopupMenuButton(
-                                              onSelected: (String val) async {
-                                                value = val;
-                                              },
-                                              itemBuilder:(BuildContext context) =>_pop)
-                                        ],
-                                      ), )
+            height: _eduListHeight,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _eduCount,
+                itemBuilder:(context,index){
+                  return  Container(
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child:GestureDetector(
+                              child:Card(
+                                  elevation: 5.0,
+                                  child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Container(
+                                          child:Image(
+                                              image:AssetImage(_eduImageUri)),
+                                          width: 40.0,
+                                          height: 40.0,
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(eduData[index]["firstLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500
+                                                )),
+                                            SizedBox(height: 5.0),
+                                            Text(eduData[index]["secondLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w300
+                                                )),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        PopupMenuButton(
+                                            onSelected: (String val) async {
+                                              value = val;
+                                            },
+                                            itemBuilder:(BuildContext context) =>_pop)
+                                      ],
+                                    ), )
 
-                                )
-                            )
-                        )
-                    );
-                  })),
-          GestureDetector(
-            onTap: navigateTo,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(width: 30.0,),
-                Icon(Icons.add,
-                  color: Colors.blue[700],
-                ),
-                SizedBox(width:3.0),
-                Text("Add Education",
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue[700]
-                  ),),
-              ],
-            ),
+                              )
+                          )
+                      )
+                  );
+                }
+            ),),
+          InkWell(
+              splashColor: Colors.purple[100],
+              child:Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(width: 30.0,),
+                    Icon(Icons.add,
+                      color: Colors.blue[700],
+                    ),
+                    SizedBox(width:3.0),
+                    Text("Add Education",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.blue[700]
+                      ),),
+                  ],
+                ),),
+              onTap:(){
+                navigateToDetailsScreen("School","Degree","study");
+              }
           ),
           SizedBox(height:25.0),
           Padding(
@@ -353,81 +388,89 @@ class _CreateCvState extends State<CreateCv> {
                     fontWeight: FontWeight.w300
                 ),)
           ),
-          Container(
-              height: 0,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child:GestureDetector(
-                                child:Card(
-                                    elevation: 5.0,
-                                    child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
-                                      child:Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Container(
-                                            child:Image(
-                                                image:AssetImage('assets/portfolio.png')),
-                                            width: 40.0,
-                                            height: 40.0,
-                                          ),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('My Cv',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w500
-                                                  )),
-                                              SizedBox(height: 5.0),
-                                              Text('25 Jun 2020',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w300
-                                                  )),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          PopupMenuButton(
-                                              onSelected: (String val) async {
-                                                value = val;
-                                              },
-                                              itemBuilder:(BuildContext context) =>_pop)
-                                        ],
-                                      ), )
+            Container(
+            height: _linkListHeight,
+            child: ListView.builder(
+              shrinkWrap: true,
+                itemCount: _linkCount,
+                itemBuilder:(context,index){
+                  return  Container(
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child:GestureDetector(
+                              child:Card(
+                                  elevation: 5.0,
+                                  child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Container(
+                                          child:Image(
+                                              image:AssetImage(imageUri)),
+                                          width: 40.0,
+                                          height: 40.0,
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(linkData[index]["firstLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500
+                                                )),
+                                            SizedBox(height: 5.0),
+                                            Text(linkData[index]["secondLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w300
+                                                )),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        PopupMenuButton(
+                                            onSelected: (String val) async {
+                                              value = val;
+                                            },
+                                            itemBuilder:(BuildContext context) =>_pop)
+                                      ],
+                                    ), )
 
-                                )
-                            )
-                        )
-                    );
-                  })),
-          Row(
+                              )
+                          )
+                      )
+                  );
+                }
+            ),),
+          InkWell(
+            splashColor: Colors.purple[100],
+            child:Container(
+            child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              SizedBox(width: 30.0,),
-              Icon(Icons.add,
-                color: Colors.blue[700],
-
-              ),
-              SizedBox(width:3.0),
-              Text("Add Link",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.blue[700]
-                ),),
+            SizedBox(width: 30.0,),
+            Icon(Icons.add,
+            color: Colors.blue[700],
+            ),
+            SizedBox(width:3.0),
+            Text("Add Link",
+            style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w400,
+            color: Colors.blue[700]
+            ),),
             ],
+            ),),
+              onTap:(){
+                navigateToLinksScreen();
+              }
           ),
+
           SizedBox(height: 30.0),
           Padding(
             padding: EdgeInsets.only(left:15.0,bottom: 15.0),
@@ -438,85 +481,144 @@ class _CreateCvState extends State<CreateCv> {
               ),),
           ),
           Container(
-              height: 0,
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 1,
-                  itemBuilder: (context, index) {
-                    return Container(
-                        child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child:GestureDetector(
-                                child:Card(
-                                    elevation: 5.0,
-                                    child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
-                                      child:Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Container(
-                                            child:Image(
-                                                image:AssetImage('assets/portfolio.png')),
-                                            width: 40.0,
-                                            height: 40.0,
-                                          ),
-                                          SizedBox(
-                                            width: 15.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text('My Cv',
-                                                  style: TextStyle(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w500
-                                                  )),
-                                            ],
-                                          ),
-                                          Spacer(),
-                                          PopupMenuButton(
-                                              onSelected: (String val) async {
-                                                value = val;
-                                              },
-                                              itemBuilder:(BuildContext context) =>_pop)
-                                        ],
-                                      ), ))
-                            )
-                        )
-                    );
-                  })),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(width: 15.0,),
-              Icon(Icons.add,
-                color: Colors.blue[700],
-              ),
-              SizedBox(width:3.0),
-              Text("Add Skill",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.blue[700]
-                ),),
-            ],
-          ),
+            height: _skillsListHeight,
+            child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _skillsCount,
+                itemBuilder:(context,index){
+                  return  Container(
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child:GestureDetector(
+                              child:Card(
+                                  elevation: 5.0,
+                                  child:Padding(padding: EdgeInsets.only(left:10.0,top:10.0,bottom: 10.0),
+                                    child:Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 5.0,
+                                        ),
+                                        Container(
+                                          child:Image(
+                                              image:AssetImage(_skillsImageUri)),
+                                          width: 40.0,
+                                          height: 40.0,
+                                        ),
+                                        SizedBox(
+                                          width: 15.0,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(skillData[index]["firstLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w500
+                                                )),
+                                            SizedBox(height: 5.0),
+                                            Text(skillData[index]["secondLabel"],
+                                                style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontWeight: FontWeight.w300
+                                                )),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        PopupMenuButton(
+                                            onSelected: (String val) async {
+                                              value = val;
+                                            },
+                                            itemBuilder:(BuildContext context) =>_pop)
+                                      ],
+                                    ), )
 
+                              )
+                          )
+                      )
+                  );
+                }
+            ),),
+          InkWell(
+              splashColor: Colors.purple[100],
+              child:Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(width: 30.0,),
+                    Icon(Icons.add,
+                      color: Colors.blue[700],
+                    ),
+                    SizedBox(width:3.0),
+                    Text("Add Skills",
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.blue[700]
+                      ),),
+                  ],
+                ),),
+              onTap:(){
+                navigateToSkillsScreen();
+              }
+          ),
           SizedBox(height: 50,)
         ],
         );
       })
     );
   }
-  void navigateTo() async {
-    bool result = await Navigator.push(context, MaterialPageRoute(
-      builder: (context)  => DetailsScreen(),
+  void navigateToDetailsScreen(String firstLabel, String secondLabel,String hintText) async {
+    Map result = await Navigator.push(context, MaterialPageRoute(
+      builder: (context)  => JobsEduScreen(firstLabel,secondLabel,hintText),
     )
     );
-    if(result == true){
+    if(result.isNotEmpty){
+      if(result['hintText'] == 'work'){
+        debugPrint("enter");
+        setState(() {
+          jobData.add(result);
+          _jobCount += 1;
+          _jobListHeight += 100.0;
+        });
+      }else if(result['hintText'] == 'study'){
+        debugPrint('entered');
+        setState(() {
+          eduData.add(result);
+          _eduCount += 1;
+          _eduListHeight += 100.0;
+        });
+      }
+
     }
   }
+  void navigateToSkillsScreen() async {
 
+    Map result = await Navigator.push(context, MaterialPageRoute(
+      builder: (context)  => SkillsScreen(),
+    )
+    );
+    if(result.isNotEmpty){
+      setState(() {
+        skillData.add(result);
+        _skillsCount += 1;
+        _skillsListHeight += 100.0;
+      });
+    }
+  }
+  void navigateToLinksScreen() async {
+    Map result = await Navigator.push(context, MaterialPageRoute(
+      builder: (context)  => LinksScreen()
+    )
+    );
+    if(result.isNotEmpty){
+      setState(() {
+        linkData.add(result);
+        debugPrint(result["firstLabel"]);
+        _linkCount += 1;
+        _linkListHeight += 100.0;
+      });
+    }
+  }
 }
+

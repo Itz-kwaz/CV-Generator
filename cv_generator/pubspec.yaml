@@ -50,6 +50,7 @@ flutter:
     - assets/extension.png
     - assets/file.png
     - assets/portfolio.png
+    - assets/resume.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

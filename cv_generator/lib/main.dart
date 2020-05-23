@@ -115,9 +115,9 @@ class _MainScreenState extends State<MainScreen> {
                               ),
                               Container(
                                 child:Image(
-                                    image:AssetImage('assets/file.png')),
-                                width: 40.0,
-                                height: 40.0,
+                                    image:AssetImage('assets/resume.png')),
+                                width: 60.0,
+                                height: 60.0,
                               ),
                               SizedBox(
                                 width: 15.0,
