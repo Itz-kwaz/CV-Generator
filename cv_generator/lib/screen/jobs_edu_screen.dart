@@ -132,7 +132,7 @@ class _JobsEduScreenState extends State<JobsEduScreen> {
                               'Update',
                               style: TextStyle(fontSize: 15.0),
                             ),
-                            color: Colors.blue[600],
+                            color: Colors.blue[500],
                             splashColor: Colors.indigo,
                             textColor: Colors.white,
                             onPressed: () {

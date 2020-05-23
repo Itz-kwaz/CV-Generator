@@ -5,6 +5,7 @@ import 'package:cvgenerator/screen/links_screen.dart';
 import 'package:cvgenerator/screen/skills_screen.dart';
 
 
+
 class CreateCv extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _CreateCvState();
@@ -58,11 +59,16 @@ class _CreateCvState extends State<CreateCv> {
   TextEditingController _aboutController;
 
 
+
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.done), onPressed: null),
+          SizedBox(width: 10)
+        ],
       ),
       body:
       ListView.builder(
