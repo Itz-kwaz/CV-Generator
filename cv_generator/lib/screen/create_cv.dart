@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cvgenerator/screen/jobs_edu_screen.dart';
 import 'package:cvgenerator/screen/links_screen.dart';
 import 'package:cvgenerator/screen/skills_screen.dart';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:cvgenerator/screen/pdf_preview_screen.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 
 class CreateCv extends StatefulWidget{
@@ -14,10 +19,37 @@ class CreateCv extends StatefulWidget{
 
 class _CreateCvState extends State<CreateCv> {
 
-  final int count= 0;
-  final double height = 0;
-  final String imageUri = "assets/file.png";
-  List<Map> list;
+  final pdf = pw.Document();
+
+  writeOnPdf(){
+    pw.MultiPage(
+      pageFormat:  PdfPageFormat.a4,
+      margin: pw.EdgeInsets.all(32),
+      build:(pw.Context context){
+        return <pw.Widget> [
+          pw.Header(
+            level: 0,
+            child: pw.Text('Example Dowcument')
+          ),
+          pw.Paragraph(text: "   Directory documentDirectory   Directory documentDirectory   Directory documentDirectory"
+          ),
+          pw.Paragraph(text: "   Directory documentDirectory   Directory documentDirectory   Directory documentDirectory"
+          ),
+          pw.Paragraph(text: "   Directory documentDirectory   Directory documentDirectory   Directory documentDirectory"
+          ),
+        ];
+      }
+    );
+  }
+
+  Future savePdf() async{
+    Directory documentDirectory = await getApplicationDocumentsDirectory();
+    String docPath = documentDirectory.path;
+
+    File file = File('$docPath/example.pdf');
+
+    file.writeAsBytesSync(pdf.save());
+  }
 
   String value;
   static const  popItem = <String>['Delete'];
@@ -66,7 +98,17 @@ class _CreateCvState extends State<CreateCv> {
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.done), onPressed: null),
+          IconButton(icon: Icon(Icons.done), onPressed: () async{
+            writeOnPdf();
+            await savePdf();
+            Directory documentDirectory = await getApplicationDocumentsDirectory();
+            String docPath = documentDirectory.path;
+            String fullpath =  '$docPath/example.pdf';
+
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PdfViewScreen(path:fullpath)
+            )
+            );
+          }),
           SizedBox(width: 10)
         ],
       ),
@@ -415,7 +457,7 @@ class _CreateCvState extends State<CreateCv> {
                                         ),
                                         Container(
                                           child:Image(
-                                              image:AssetImage(imageUri)),
+                                              image:AssetImage(_linkImageUri)),
                                           width: 40.0,
                                           height: 40.0,
                                         ),
