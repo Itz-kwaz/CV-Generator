@@ -18,7 +18,9 @@ environment:
 
 dependencies:
   path_provider:
-  flutter_full_pdf_viewer: ^1.0.4
+  flutter_full_pdf_viewer: ^1.0.6
+  downloads_path_provider: ^0.1.0
+  printing: ^3.4.0
   pdf: ^1.8.1
   splashscreen: ^1.2.0
   intl:
