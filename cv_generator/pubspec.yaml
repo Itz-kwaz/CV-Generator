@@ -49,10 +49,14 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/extension.png
-    - assets/file.png
-    - assets/portfolio.png
+    - assets/award.png
+    - assets/link.png
+    - assets/briefcase.png
+    - assets/cap.png
+    - assets/puzzle.png
     - assets/resume.png
+    - assets/template_one.png
+    - assets/template_two.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -14,8 +14,10 @@ class _SkillsScreenState extends State<SkillsScreen> {
   String _value ;
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     TextEditingController _controllerSkill  = TextEditingController();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
 
       ),
@@ -75,9 +77,15 @@ class _SkillsScreenState extends State<SkillsScreen> {
                       }
                       if(_controllerSkill.text.isNotEmpty){
                             Map map = {'firstLabel': _controllerSkill.text, 'secondLabel': _value};
-
                             Navigator.pop(context,map);
-                          }
+                          }else{
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          content: Text(
+                            'Please fill empty fields',
+                          ),
+                          duration: Duration(seconds: 2),
+                        ));
+                      }
                         }
                     )
                 )

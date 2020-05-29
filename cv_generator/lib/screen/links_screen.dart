@@ -10,11 +10,12 @@ class LinksScreen extends StatelessWidget{
 
  @override
  Widget build(BuildContext context) {
+   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
    TextEditingController _controllerLinkName  = TextEditingController();
    TextEditingController _controllerLink= TextEditingController();
    return Scaffold(
+     key: _scaffoldKey,
      appBar: AppBar(
-
      ),
      body: ListView(children: <Widget>[
        SizedBox(height: 10.0),
@@ -65,8 +66,14 @@ class LinksScreen extends StatelessWidget{
                        Map map = {'firstLabel': linkName, 'secondLabel': link};
 
                        Navigator.pop(context,map);
+                     }else{
+                       _scaffoldKey.currentState.showSnackBar(SnackBar(
+                         content: Text(
+                           'Please fill empty fields',
+                         ),
+                         duration: Duration(seconds: 2),
+                       ));
                      }
-
                    }
                    )
                )

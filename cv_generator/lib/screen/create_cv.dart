@@ -17,6 +17,9 @@ import 'package:meta/meta.dart';
 
 
 class CreateCv extends StatefulWidget{
+  final  int  templateNum;
+
+  const CreateCv(this.templateNum);
   @override
   State<StatefulWidget> createState() => _CreateCvState();
 
@@ -32,13 +35,13 @@ class _CreateCvState extends State<CreateCv> {
   TextEditingController _emailController  = TextEditingController();
   TextEditingController _phoneNoController  = TextEditingController();
   TextEditingController _addressController  = TextEditingController();
-  TextEditingController  controller = TextEditingController();
+  TextEditingController  aboutController = TextEditingController();
+  TextEditingController titleController =  TextEditingController();
 
 
 
-  final pdf = pw.Document();
+/*  final pdf = pw.Document();*/
 
-  final pw.Document doc = pw.Document(title: 'My Résumé', author: 'David PHAM-VAN');
 
   String value;
   static const  popItem = <String>['Delete'];
@@ -52,52 +55,67 @@ class _CreateCvState extends State<CreateCv> {
   List<Map> jobData = new List();
   int _jobCount = 0;
   double _jobListHeight = 0;
-  String _jobImageUri = "assets/portfolio.png";
+  String _jobImageUri = "assets/briefcase.png";
 
   //Number of educational achievements added by User.
   List<Map> eduData = new List();
   int _eduCount = 0;
   double _eduListHeight = 0.0;
-  String _eduImageUri = 'assets/extension.png';
+  String _eduImageUri = 'assets/cap.png';
 
   //Number of Social Links,Website or Portfolio LInks added by User
   List<Map> linkData = new List();
   int _linkCount = 0;
   double _linkListHeight = 0.0;
-  String _linkImageUri = "assets/extension.png";
+  String _linkImageUri = "assets/link.png";
 
   //Number of Skills added by User
   List<Map> skillData = new List();
   int _skillsCount = 0;
   double _skillsListHeight = 0.0;
-  String _skillsImageUri = "assets/extension.png";
+  String _skillsImageUri = "assets/puzzle.png";
 
 
 
   @override
   Widget build(BuildContext context) {
-
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         actions: <Widget>[
           IconButton(icon: Icon(Icons.done), onPressed: () async{
-           /* generateResume(PdfPageFormat.a4);*/
-            writeOnPdf();
-            await savePdf();
-            Directory documentDirectory = await getApplicationDocumentsDirectory();
-            String documentPath = documentDirectory.path;
-            String fullPath = "$documentPath/example.pdf";
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => PDFViewScreen(fullPath,pdf)
-            ));
+            if(titleController.text.isNotEmpty){
+              pw.Document pdf = pw.Document();
+              if(widget.templateNum == 1){
+               pdf = await writeOnPdf();
+              }else{
+                pdf = await  writeOnPdfTwo();
+              }
+
+              await savePdf(pdf);
+              Directory documentDirectory = await getApplicationDocumentsDirectory();
+              String documentPath = documentDirectory.path;
+              String title = titleController.text;
+              String fullPath = "$documentPath/$title.pdf";
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => PDFViewScreen(fullPath,pdf,title)
+              ));
+            }else{
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                content: Text(
+                  'Document must have Title',
+                ),
+                duration: Duration(seconds: 2),
+              ));
+            }
+
 
           }),
           SizedBox(width: 10)
         ],
       ),
-      body:
-      ListView.builder(
-          itemCount: 1,
+      body: ListView.builder(itemCount: 1,
           itemBuilder: (context,index){
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +123,7 @@ class _CreateCvState extends State<CreateCv> {
           Center(child: Padding(padding: EdgeInsets.all(20.0),
             child:  TextField(showCursor: true,
               autofocus: false,
+              controller: titleController,
               decoration: InputDecoration(
                   hintText: "Title"
               ),
@@ -185,7 +204,7 @@ class _CreateCvState extends State<CreateCv> {
           Padding(
             padding: EdgeInsets.only(left:12.0,right: 12.0,bottom: 5.0),
             child: TextField(
-              controller: controller,
+              controller: aboutController,
               maxLines: null,
               decoration: InputDecoration(
                  hintText: "I am very passionate developer with skills in java,flutter",
@@ -240,7 +259,7 @@ class _CreateCvState extends State<CreateCv> {
                                         ),
                                         Container(
                                           child:Image(
-                                              image:AssetImage(_skillsImageUri)),
+                                              image:AssetImage(_jobImageUri)),
                                           width: 40.0,
                                           height: 40.0,
                                         ),
@@ -267,7 +286,12 @@ class _CreateCvState extends State<CreateCv> {
                                         PopupMenuButton(
                                             onSelected: (String val) async {
                                               value = val;
-                                            },
+                                              setState(() {
+                                                jobData.removeAt(index);
+                                                _jobListHeight = _jobListHeight -100;
+                                                _jobCount  = _jobCount -1;
+                                              });
+                                              },
                                             itemBuilder:(BuildContext context) =>_pop)
                                       ],
                                     ), )
@@ -367,6 +391,9 @@ class _CreateCvState extends State<CreateCv> {
                                         PopupMenuButton(
                                             onSelected: (String val) async {
                                               value = val;
+                                              eduData.removeAt(index);
+                                              _eduListHeight = _eduListHeight -100;
+                                              _eduCount  = _eduCount -1;
                                             },
                                             itemBuilder:(BuildContext context) =>_pop)
                                       ],
@@ -624,7 +651,6 @@ class _CreateCvState extends State<CreateCv> {
     }
   }
   void navigateToSkillsScreen() async {
-
     Map result = await Navigator.push(context, MaterialPageRoute(
       builder: (context)  => SkillsScreen(),
     )
@@ -651,7 +677,139 @@ class _CreateCvState extends State<CreateCv> {
       });
     }
   }
-  void writeOnPdf() async {
+
+ Future<pw.Document> writeOnPdfTwo() async{
+    pw.Document pdf = pw.Document();
+    pdf.addPage(pw.MultiPage(
+      pageFormat: PdfPageFormat.a4,
+        margin: pw.EdgeInsets.all(32),
+      build: (pw.Context context) => <pw.Widget>[
+        pw.Container(
+          padding: pw.EdgeInsets.all(20.0),
+          width: double.infinity,
+          color: PdfColors.indigoAccent,
+          child:  pw.Text(_firstNameController.text + " " + _lastNameController.text,
+              textScaleFactor: 2.1,
+              style: pw.Theme.of(context)
+                  .defaultTextStyle
+                  .copyWith(fontWeight: pw.FontWeight.bold,color: PdfColors.white)),
+        ),
+        pw.SizedBox(height: 8.0),
+        pw.RichText(text: pw.TextSpan(
+            text: aboutController.text,
+            style: pw.TextStyle(
+                fontSize: 20.0,
+                color: PdfColors.black
+            )
+        )
+        ),
+        pw.SizedBox(height: 10.0),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.start,
+          children: <pw.Widget>[
+            pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: <pw.Widget>[
+                _Category(jobData,"Work Experience"),
+                _Block(data: jobData),
+                _Category(eduData, 'Education'),
+                _Block(data: eduData),
+                _Category(skillData, "Skills"),
+                _Skill(data: skillData)
+
+              ]
+            ),
+            pw.SizedBox(width: 60.0),
+            pw.Container(
+              height: 250,
+              width: 2,
+              color: PdfColors.grey50
+            ),
+            pw.Container(
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                mainAxisAlignment: pw.MainAxisAlignment.start,
+                children: <pw.Widget>[
+                  pw.Text('Personal Info',
+                      style: pw.TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: pw.FontWeight.bold
+                      )),
+                  pw.Container(
+                    padding: pw.EdgeInsets.only(left:20.0,top:10.0),
+                    height: 2,
+                    width: 100,
+                    color: PdfColors.black),
+                  pw.Text('Address ',
+                      style: pw.TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: pw.FontWeight.bold
+                      )),
+                  pw.SizedBox(height:10.0),
+                  pw.RichText(
+                      text: pw.TextSpan(
+                          text: _addressController.text,
+                          style: pw.TextStyle(
+                              fontSize: 15.0,
+                              color: PdfColors.black
+                          )
+                      )
+                  ),
+                  pw.SizedBox(height: 10.0),
+                  pw.Text('Phone:',
+                      style: pw.TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: pw.FontWeight.bold
+                      )),
+                  pw.Text(_phoneNoController.text,
+                      style: pw.TextStyle(
+                        fontSize: 15.0,
+                      )),
+                  pw.SizedBox(height: 10.0),
+                  pw.Text('E-mail ',
+                      style: pw.TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: pw.FontWeight.bold
+                      )),
+                  _UrlText(_emailController.text,
+                      'mailto:'+ _emailController.text),
+                  pw.SizedBox(height:30.0),
+                  pw.ListView.builder(
+                    itemCount: linkData.length,
+                    itemBuilder: (context,index){
+                      return  pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: <pw.Widget>[
+                            pw.Column(
+                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                children: <pw.Widget>[
+                                  pw.Text(linkData[index]['firstLabel']+ ";",
+                                      style: pw.TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: pw.FontWeight.bold
+                                      )),
+                                  pw.SizedBox(height: 3.0),
+                                  _UrlText(linkData[index]['secondLabel'],
+                                      linkData[index]['secondLabel']),
+                                ]
+                            ),
+                            pw.SizedBox(height: 6.0),
+                          ]
+                      );
+                    }, ),
+                ]
+              )
+            )
+
+          ]
+        )
+
+      ]
+    ));
+    return pdf;
+  }
+ Future<pw.Document> writeOnPdf() async {
+    pw.Document pdf = pw.Document();
     pdf.addPage(pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: pw.EdgeInsets.all(32),
@@ -691,8 +849,9 @@ class _CreateCvState extends State<CreateCv> {
                                                         fontSize: 15.0,
                                                       ))
                                                 ]),
-                                            pw.SizedBox(height: 5.0),
-                                            pw.RichText(text: pw.TextSpan(
+                                            pw.SizedBox(height: 10.0),
+                                            pw.RichText(
+                                                text: pw.TextSpan(
                                                 text: _addressController.text,
                                                 style: pw.TextStyle(
                                                     fontSize: 15.0,
@@ -730,10 +889,11 @@ class _CreateCvState extends State<CreateCv> {
                                     height: 2,
                                     color: PdfColors.grey
                                 ),
+                              pw.SizedBox(height: 8.0),
                                 pw.RichText(text: pw.TextSpan(
-                                    text: controller.text,
+                                    text: aboutController.text,
                                     style: pw.TextStyle(
-                                        fontSize: 15.0,
+                                        fontSize: 20.0,
                                         color: PdfColors.black
                                     )
                                 )
@@ -750,17 +910,17 @@ class _CreateCvState extends State<CreateCv> {
           ]
     )
     );
-
+      return pdf;
   }
 
 
 
-  Future savePdf() async{
+  Future savePdf(pw.Document pdf) async{
     Directory documentDirectory = await getApplicationDocumentsDirectory();
 
     String documentPath = documentDirectory.path;
-
-    File file = File("$documentPath/example.pdf");
+    String title = titleController.text;
+    File file = File("$documentPath/$title.pdf");
 
     file.writeAsBytesSync(pdf.save());
   }
@@ -843,10 +1003,13 @@ class _Category extends pw.StatelessWidget {
   pw.Widget build(pw.Context context) {
       if(data.isNotEmpty){
         return pw.Container(
-            decoration: const pw.BoxDecoration(color: lightGreen, borderRadius: 6),
+            decoration: const pw.BoxDecoration(color:PdfColors.indigoAccent, borderRadius: 6),
             margin: const pw.EdgeInsets.only(bottom: 10, top: 20),
             padding: const pw.EdgeInsets.fromLTRB(10, 7, 10, 4),
-            child: pw.Text(title, textScaleFactor: 1.8));
+            child: pw.Text(title, textScaleFactor: 1.8,
+            style: pw.TextStyle(
+              color:PdfColors.white
+            )));
       }else{
         return pw.Container(
           height: 0.0

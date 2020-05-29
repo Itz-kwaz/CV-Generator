@@ -1,3 +1,4 @@
+import 'package:cvgenerator/screen/template_select.dart';
 import 'package:flutter/material.dart';
 import 'package:splashscreen/splashscreen.dart';
 import 'package:cvgenerator/screen/create_cv.dart';
@@ -34,11 +35,11 @@ class _MyHomePageState extends State<MyHomePage> {
       loaderColor: Colors.white,
       seconds: 5,
       title: Text('Cv Generator',
-        style: TextStyle(color: Colors.blue,
+        style: TextStyle(color: Colors.white,
             fontSize: 35.0,
             fontWeight: FontWeight.bold),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blue,
       navigateAfterSeconds: MainScreen(),
     );
   }
@@ -98,7 +99,7 @@ class _MainScreenState extends State<MainScreen> {
                   fontWeight: FontWeight.bold
               ),),
           ),
-          Expanded(
+       /*   Expanded(
               child: ListView.builder(
                   itemCount: 1,
                   itemBuilder: (context, index) {
@@ -158,7 +159,7 @@ class _MainScreenState extends State<MainScreen> {
 
                         ),)
                     );
-                  }))
+                  }))*/
 
         ],
       ),
@@ -170,12 +171,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void navigateTo() async {
-    bool result = await Navigator.push(context, MaterialPageRoute(
-      builder: (context)  => CreateCv(),
+   Navigator.push(context, MaterialPageRoute(
+      builder: (context)  => TemplateScreen(),
     )
     );
-    if(result == true){
-    }
+
   }
 }
 

@@ -24,7 +24,9 @@ class _JobsEduScreenState extends State<JobsEduScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
     return Scaffold(
+      key: _scaffoldKey,
         appBar: AppBar(),
         body: ListView(
           children: <Widget>[
@@ -142,6 +144,13 @@ class _JobsEduScreenState extends State<JobsEduScreen> {
                                 Map map = {'firstLabel': _controllerOne.text, 'secondLabel': _controllerTwo.text,
                                   'startDate': _startDateController.text, 'endDate': _endDateController.text,'hintText': widget.switchHintText};
                                 Navigator.pop(context,map);
+                              }else{
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  content: Text(
+                                    'Please fill empty fields',
+                                  ),
+                                  duration: Duration(seconds: 2),
+                                ));
                               }
                             }
                             )
